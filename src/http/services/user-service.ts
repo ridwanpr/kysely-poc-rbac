@@ -1,19 +1,26 @@
-import type { UserRepository } from "../repositories/user-repository.js"
+import type { UserRepository } from "../repositories/user-repository.js";
 
 export interface UserService {
-  getUserByEmail(email: string): Promise<unknown>
+  getUserByEmail(email: string): Promise<unknown>;
+  createUser(email: string, name: string, password: string): Promise<unknown>;
 }
 
-export const createUserService = (
-  repo: UserRepository
-): UserService => {
+export const createUserService = (repo: UserRepository): UserService => {
   const getUserByEmail = async (email: string) => {
-    const user = await repo.findUserByEmail(email)
+    const user = await repo.findByEmail(email);
     if (!user) {
-      throw new Error("User not found")
+      throw new Error("User not found");
     }
-    return user
-  }
+    return user;
+  };
 
-  return { getUserByEmail }
-}
+  const createUser = async (email: string, name: string, password: string) => {
+    const user = await repo.create({ email, name, password });
+    if (!user) {
+      throw new Error("Create user failed");
+    }
+    return user;
+  };
+
+  return { getUserByEmail, createUser };
+};

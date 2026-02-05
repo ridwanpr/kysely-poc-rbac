@@ -10,7 +10,7 @@ export const createUserController = (service: UserService) => {
     }
 
     const user = await service.getUserByEmail(email);
-    res.json(user);
+    return res.json(user);
   };
 
   return { getUser };

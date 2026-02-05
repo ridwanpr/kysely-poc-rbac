@@ -13,6 +13,7 @@ export interface Users {
   created_at: Date | null;
   email: string;
   id: Generated<number>;
+  name: string;
   password: string;
   updated_at: Date | null;
 }

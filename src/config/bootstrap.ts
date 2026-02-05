@@ -4,6 +4,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import { trimMiddleware } from "../http/middlewares/trim-middleware.js";
 import { userRouter } from "../routes/user-route.js";
+import { authRouter } from "../routes/auth-route.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
 app.use(trimMiddleware);
 
 app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
 
 app.use((_req, res) => {
   return res.sendStatus(404);
