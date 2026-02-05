@@ -1,4 +1,5 @@
-import { app } from "./config/app.js";
+import "dotenv/config";
+import { app } from "./config/bootstrap.js";
 
 const PORT = process.env.PORT || 5001;
 
