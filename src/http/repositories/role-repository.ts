@@ -1,14 +1,15 @@
-import type { Kysely } from "kysely";
+import type { Kysely, Selectable } from "kysely";
 import type { DB } from "../../database/types.js";
 
+export type Role = Selectable<DB["roles"]>;
+
 export interface RoleRepository {
-  getAllRoles: () => void;
+  getAllRoles: () => Promise<Role[] | undefined>;
 }
 
 export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
-  const getAllRoles = () => {
-    console.log(db);
-    throw new Error("Not yet implemented");
+  const getAllRoles = async () => {
+    return await db.selectFrom("roles").selectAll().limit(10).execute();
   };
 
   return {

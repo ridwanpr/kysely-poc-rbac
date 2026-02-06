@@ -1,10 +1,6 @@
 import bcrypt from "bcrypt";
-import type { DB } from "../../database/types.js";
-import type { Selectable } from "kysely";
-import type { UserRepository } from "../repositories/user-repository.js";
+import type { User, UserRepository } from "../repositories/user-repository.js";
 import { ResponseError } from "../errors/handle-error.js";
-
-export type User = Selectable<DB["users"]>;
 
 export interface UserService {
   getUserByEmail(email: string): Promise<User | undefined>;
