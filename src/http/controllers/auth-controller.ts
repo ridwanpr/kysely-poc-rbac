@@ -57,5 +57,13 @@ export const createAuthController = (service: UserService) => {
     });
   };
 
-  return { register, login };
+  const logout = async (req: Request, res: Response) => {
+    await redisClient.del(`session:${req.sessionID}`);
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid");
+      return res.json({ msg: "Logged out successfully" });
+    });
+  };
+
+  return { register, login, logout };
 };
