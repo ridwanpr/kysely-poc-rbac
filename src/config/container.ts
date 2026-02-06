@@ -1,4 +1,4 @@
-import { db } from "../db/index.js";
+import { db } from "../database/index.js";
 import { createUserRepository } from "../http/repositories/user-repository.js";
 import { createUserService } from "../http/services/user-service.js";
 import { createUserController } from "../http/controllers/user-controller.js";
