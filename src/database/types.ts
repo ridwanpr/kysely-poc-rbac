@@ -9,6 +9,33 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export interface Permissions {
+  created_at: Generated<Date | null>;
+  description: string | null;
+  id: Generated<number>;
+  permission_slug: string;
+  updated_at: Date | null;
+}
+
+export interface RolePermissions {
+  permission_id: number;
+  role_id: number;
+}
+
+export interface Roles {
+  created_at: Generated<Date | null>;
+  description: string | null;
+  id: Generated<number>;
+  name: string;
+  updated_at: Date | null;
+}
+
+export interface UserRoles {
+  assigned_at: Generated<Date | null>;
+  role_id: number;
+  user_id: number;
+}
+
 export interface Users {
   created_at: Date | null;
   email: string;
@@ -19,5 +46,9 @@ export interface Users {
 }
 
 export interface DB {
+  permissions: Permissions;
+  role_permissions: RolePermissions;
+  roles: Roles;
+  user_roles: UserRoles;
   users: Users;
 }

@@ -1,4 +1,6 @@
+import bcrypt from "bcrypt";
 import type { UserRepository } from "../repositories/user-repository.js";
+import { ResponseError } from "../exceptions/handle-error.js";
 
 export interface UserService {
   getUserByEmail(email: string): Promise<unknown>;
@@ -15,11 +17,13 @@ export const createUserService = (repo: UserRepository): UserService => {
   };
 
   const createUser = async (email: string, name: string, password: string) => {
-    const user = await repo.create({ email, name, password });
-    if (!user) {
-      throw new Error("Create user failed");
+    const user = await repo.findByEmail(email);
+    if (user) {
+      throw new ResponseError(409, "A user with this email already exists");
     }
-    return user;
+    const hashedPassword = await bcrypt.hash(password, 11);
+    const newUser = await repo.create(email, name, hashedPassword);
+    return newUser;
   };
 
   return { getUserByEmail, createUser };

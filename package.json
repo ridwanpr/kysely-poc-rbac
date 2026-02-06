@@ -10,7 +10,7 @@
     "migrate": "kysely migrate:latest",
     "migrate:undo": "kysely migrate:down",
     "migrate:make": "kysely migrate:make",
-    "codegen": "kysely-codegen --out-file ./src/db/types.ts",
+    "codegen": "kysely-codegen --out-file ./src/database/types.ts",
     "db:setup": "npm run migrate && npm run codegen"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-redis": "^9.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
@@ -26,6 +27,7 @@
     "express-session": "^1.19.0",
     "kysely": "^0.28.11",
     "mysql2": "^3.16.3",
+    "redis": "^5.10.0",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0"
   },

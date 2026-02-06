@@ -10,7 +10,10 @@ export const createAuthController = (service: UserService) => {
     }
 
     const createUser = await service.createUser(email, name, password);
-    return res.json(createUser);
+    return res.status(201).json({
+      message: "Register Success",
+      data: createUser,
+    });
   };
 
   return { register };
