@@ -1,0 +1,21 @@
+meta {
+  name: Login User
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:5001/api/auth/login
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  email: chiha@gmail.com
+  password: 12345678
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

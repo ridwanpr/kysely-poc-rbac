@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import type { UserRepository } from "../repositories/user-repository.js";
-import { ResponseError } from "../exceptions/handle-error.js";
+import { ResponseError } from "../errors/handle-error.js";
 
 export interface UserService {
   getUserByEmail(email: string): Promise<unknown>;

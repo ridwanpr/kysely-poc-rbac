@@ -6,7 +6,7 @@ export const createAuthController = (service: UserService) => {
     const { email, name, password } = req.body || {};
 
     if (!email || !name || !password) {
-      return res.json({ message: "Email, name and password is required" });
+      return res.status(400).json({ message: "Email, name and password is required" });
     }
 
     const createUser = await service.createUser(email, name, password);
@@ -16,5 +16,17 @@ export const createAuthController = (service: UserService) => {
     });
   };
 
-  return { register };
+  const login = async (req: Request, res: Response) => {
+    const { email, password } = req.body || {};
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password is required" });
+    }
+
+    return res.status(200).json({
+      message: "Login Success",
+    });
+  };
+
+  return { register, login };
 };
