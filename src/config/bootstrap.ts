@@ -8,6 +8,7 @@ import { authRouter } from "../routes/auth-route.js";
 import { errorMiddleware } from "../http/middlewares/error-middleware.js";
 import { redisClient } from "./redis.js";
 import { RedisStore } from "connect-redis";
+import { roleRouter } from "../routes/role-route.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/", roleRouter);
 
 app.use((_req, res) => {
   return res.sendStatus(404);
