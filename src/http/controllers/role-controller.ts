@@ -26,8 +26,24 @@ export const createRoleController = (roleService: RoleService) => {
     });
   };
 
-  const update = () => {
-    throw new Error("Not yet implemented");
+  const update = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { name, description } = req.body || {};
+    if (!name || !description) {
+      return res
+        .status(400)
+        .json({ message: "Name and Description is required" });
+    }
+
+    const role = await roleService.updateRole(Number(id), {
+      name,
+      description,
+    });
+
+    return res.json({
+      message: "Update role success",
+      data: role,
+    });
   };
 
   const destroy = () => {

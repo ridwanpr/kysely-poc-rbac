@@ -3,12 +3,12 @@ import type { User, UserRepository } from "../repositories/user-repository.js";
 import { ResponseError } from "../errors/handle-error.js";
 
 export interface UserService {
-  getUserByEmail(email: string): Promise<User | undefined>;
-  createUser(
+  getUserByEmail: (email: string) => Promise<User | undefined>;
+  createUser: (
     email: string,
     name: string,
     password: string,
-  ): Promise<User | undefined>;
+  ) => Promise<User | undefined>;
 }
 
 export const createUserService = (repo: UserRepository): UserService => {

@@ -3,7 +3,7 @@ import type { DB } from "../../database/types.js";
 
 export type User = Selectable<DB["users"]>;
 
-export interface UserRepository {
+export type UserRepository = {
   findByEmail(email: string): Promise<User | undefined>;
   findById(id: number): Promise<User | undefined>;
   create(email: string, name: string, password: string): Promise<User>;

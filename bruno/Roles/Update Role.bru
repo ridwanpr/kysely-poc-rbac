@@ -1,0 +1,23 @@
+meta {
+  name: Update Role
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:5001/api/roles/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Admin Update",
+    "description": "Admin Update role"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
