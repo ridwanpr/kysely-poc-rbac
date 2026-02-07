@@ -1,7 +1,8 @@
 import type { Role, RoleRepository } from "../repositories/role-repository.js";
 
 export interface RoleService {
-  getRoles: () => Promise<Role[] | undefined>;
+  getRoles(): Promise<Role[]>;
+  createRole(name: string, description: string): Promise<Role>;
 }
 
 export const createRoleService = (
@@ -12,7 +13,10 @@ export const createRoleService = (
     return roles;
   };
 
-  return {
-    getRoles,
+  const createRole = async (name: string, description: string) => {
+    const result = await roleRepository.createRole(name, description);
+    return result;
   };
+
+  return { getRoles, createRole };
 };

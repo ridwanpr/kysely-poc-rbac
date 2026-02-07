@@ -41,7 +41,7 @@ export const createUserRepository = (db: Kysely<DB>): UserRepository => {
           .executeTakeFirst();
 
         if (!user) {
-          throw new Error("Failed to retrieve created user");
+          throw new Error("Unreachable: user was not found after insert");
         }
 
         return user;
