@@ -63,7 +63,7 @@ export const createAuthController = (service: UserService) => {
     await redisClient.del(`session:${req.sessionID}`);
     req.session.destroy(() => {
       res.clearCookie("connect.sid");
-      return res.json({ success: true, msg: "Logged out successfully" });
+      return res.json({ success: true, message: "Logged out successfully" });
     });
   };
 

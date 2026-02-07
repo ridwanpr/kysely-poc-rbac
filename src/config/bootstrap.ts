@@ -32,7 +32,8 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15min
   limit: 10,
   message: {
-    error: "Too many login attempts, please try again after 15 minutes",
+    success: false,
+    message: "Too many login attempts, please try again after 15 minutes",
   },
   standardHeaders: "draft-8",
   legacyHeaders: false,
@@ -42,7 +43,8 @@ const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15min
   limit: 1000, // Generous
   message: {
-    error: "You are rate limited, please try again after 15 minutes",
+    success: false,
+    message: "You are rate limited, please try again after 15 minutes",
   },
   standardHeaders: "draft-8",
   legacyHeaders: false,
