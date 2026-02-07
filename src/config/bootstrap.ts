@@ -30,7 +30,7 @@ app.use(
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15min
-  limit: 1,
+  limit: 10,
   message: {
     error: "Too many login attempts, please try again after 15 minutes",
   },
