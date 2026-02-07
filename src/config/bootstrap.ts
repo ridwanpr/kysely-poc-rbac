@@ -30,8 +30,10 @@ app.use(
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15min
-  limit: 10,
-  message: "Too many login attempts, please try again after 15 minutes",
+  limit: 1,
+  message: {
+    error: "Too many login attempts, please try again after 15 minutes",
+  },
   standardHeaders: "draft-8",
   legacyHeaders: false,
 });
@@ -39,6 +41,9 @@ const authLimiter = rateLimit({
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15min
   limit: 1000, // Generous
+  message: {
+    error: "You are rate limited, please try again after 15 minutes",
+  },
   standardHeaders: "draft-8",
   legacyHeaders: false,
 });
