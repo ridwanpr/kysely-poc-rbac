@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "Express Session Auth",
+  "name": "Kysely RBAC POC",
   "type": "collection",
   "ignore": [
     "node_modules",
