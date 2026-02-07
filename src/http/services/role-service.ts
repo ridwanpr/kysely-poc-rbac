@@ -1,10 +1,12 @@
 import type { RoleInput } from "../../types/role-permission.js";
+import { ResponseError } from "../errors/handle-error.js";
 import type { Role, RoleRepository } from "../repositories/role-repository.js";
 
 export interface RoleService {
   getRoles: () => Promise<Role[]>;
   createRole: (name: string, description: string) => Promise<Role>;
   updateRole: (id: number, data: RoleInput) => Promise<Role>;
+  deleteRole: (id: number) => Promise<boolean>;
 }
 
 export const createRoleService = (
@@ -31,5 +33,19 @@ export const createRoleService = (
     return result;
   };
 
-  return { getRoles, createRole, updateRole };
+  const deleteRole = async (id: number) => {
+    const role = await roleRepository.findRoleById(id);
+    if (!role) {
+      throw new ResponseError(404, "Role not found");
+    }
+
+    const result = await roleRepository.deleteRole(id);
+    if (result.numDeletedRows === BigInt(0)) {
+      throw new Error("Something went wrong. Delete role failed");
+    }
+
+    return true;
+  };
+
+  return { getRoles, createRole, updateRole, deleteRole };
 };

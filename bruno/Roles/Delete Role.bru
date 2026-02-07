@@ -1,0 +1,23 @@
+meta {
+  name: Delete Role
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:5001/api/roles/2
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Admin Update",
+    "description": "Admin Update role"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

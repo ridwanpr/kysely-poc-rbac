@@ -1,4 +1,4 @@
-import type { Kysely, Selectable } from "kysely";
+import type { DeleteResult, Kysely, Selectable } from "kysely";
 import type { DB } from "../../database/types.js";
 import type { RoleInput } from "../../types/role-permission.js";
 
@@ -9,6 +9,7 @@ export type RoleRepository = {
   findRoleById: (id: number) => Promise<Role | undefined>;
   createRole: (name: string, description: string) => Promise<Role | undefined>;
   updateRole: (id: number, data: RoleInput) => Promise<Role | undefined>;
+  deleteRole: (id: number) => Promise<DeleteResult>;
 };
 
 export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
@@ -54,10 +55,15 @@ export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
     return await findRoleById(id);
   };
 
+  const deleteRole = async (id: number) => {
+    return await db.deleteFrom("roles").where("id", "=", id).executeTakeFirst();
+  };
+
   return {
     getAllRoles,
     findRoleById,
     createRole,
     updateRole,
+    deleteRole,
   };
 };

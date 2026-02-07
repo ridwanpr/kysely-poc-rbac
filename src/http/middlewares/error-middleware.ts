@@ -11,6 +11,7 @@ export const errorMiddleware = (
 ) => {
   if (error instanceof ResponseError) {
     return response.status(error.status).json({
+      success: false,
       type: "Response Error",
       message: error.message,
     });
@@ -20,6 +21,7 @@ export const errorMiddleware = (
 
     logger.error(error.message, { stack: error.stack });
     return response.status(500).json({
+      success: false,
       type: "Internal Server Error",
       message: error.message,
       stack: isDevEnv ? error.stack : null,

@@ -15,6 +15,7 @@ export const createAuthController = (service: UserService) => {
 
     const createUser = await service.createUser(email, name, password);
     return res.status(201).json({
+      success: true,
       message: "Register Success",
       data: createUser,
     });
@@ -26,7 +27,7 @@ export const createAuthController = (service: UserService) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ message: "Email and password is required" });
+        .json({ success: true, message: "Email and password is required" });
     }
 
     const user = await service.getUserByEmail(email);
@@ -53,6 +54,7 @@ export const createAuthController = (service: UserService) => {
     );
 
     return res.status(200).json({
+      success: true,
       message: "Login Success",
     });
   };
@@ -61,7 +63,7 @@ export const createAuthController = (service: UserService) => {
     await redisClient.del(`session:${req.sessionID}`);
     req.session.destroy(() => {
       res.clearCookie("connect.sid");
-      return res.json({ msg: "Logged out successfully" });
+      return res.json({ success: true, msg: "Logged out successfully" });
     });
   };
 
