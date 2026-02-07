@@ -22,7 +22,7 @@ export const createUserService = (repo: UserRepository): UserService => {
     if (user) {
       throw new ResponseError(409, "A user with this email already exists");
     }
-    const hashedPassword = await bcrypt.hash(password, 11);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await repo.create(email, name, hashedPassword);
     return newUser;
   };

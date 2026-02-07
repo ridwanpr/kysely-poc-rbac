@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import { rateLimit } from "express-rate-limit";
 import { trimMiddleware } from "../http/middlewares/trim-middleware.js";
 import { userRouter } from "../routes/user-route.js";
 import { authRouter } from "../routes/auth-route.js";
@@ -17,8 +18,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(trimMiddleware);
-
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -29,8 +28,27 @@ app.use(
   }),
 );
 
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15min
+  limit: 10,
+  message: "Too many login attempts, please try again after 15 minutes",
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15min
+  limit: 1000, // Generous
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
+app.use(globalLimiter);
+
+app.use(trimMiddleware);
+
 app.use("/api/users", userRouter);
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/", roleRouter);
 
 app.use((_req, res) => {
