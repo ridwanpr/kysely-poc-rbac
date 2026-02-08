@@ -1,32 +1,24 @@
 import type { Request, Response } from "express";
 import type { RoleService } from "../services/role-service.js";
 import { ResponseError } from "../errors/handle-error.js";
+import { sendSuccess } from "../../utils/response-util.js";
 
 export const createRoleController = (roleService: RoleService) => {
   const index = async (_req: Request, res: Response) => {
     const roles = await roleService.getRoles();
-    return res.json({
-      success: true,
-      message: "Fetch roles success",
-      data: roles,
-    });
+    
+    return sendSuccess(res, roles, "Fetch roles success");
   };
 
   const store = async (req: Request, res: Response) => {
     const { name, description } = req.body || {};
     if (!name || !description) {
-      return res
-        .status(400)
-        .json({ message: "Name and Description is required" });
+      throw new ResponseError(400, "Name and Description is required");
     }
 
     const role = await roleService.createRole(name, description);
 
-    return res.json({
-      success: true,
-      message: "Create new role success",
-      data: role,
-    });
+    return sendSuccess(res, role, "Create new role success", 201);
   };
 
   const update = async (req: Request, res: Response) => {
@@ -36,9 +28,7 @@ export const createRoleController = (roleService: RoleService) => {
 
     const { name, description } = req.body || {};
     if (!name || !description) {
-      return res
-        .status(400)
-        .json({ message: "Name and Description is required" });
+      throw new ResponseError(400, "Name and Description is required");
     }
 
     const role = await roleService.updateRole(id, {
@@ -46,11 +36,7 @@ export const createRoleController = (roleService: RoleService) => {
       description,
     });
 
-    return res.json({
-      success: true,
-      message: "Update role success",
-      data: role,
-    });
+    return sendSuccess(res, role, "Update role success");
   };
 
   const destroy = async (req: Request, res: Response) => {
@@ -60,10 +46,7 @@ export const createRoleController = (roleService: RoleService) => {
 
     await roleService.deleteRole(id);
 
-    return res.json({
-      success: true,
-      message: "Delete role success",
-    });
+    return sendSuccess(res, undefined, "Delete role success");
   };
 
   return { index, store, update, destroy };

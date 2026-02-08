@@ -1,44 +1,30 @@
-import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
 import type { UserService } from "../services/user-service.js";
 import { redisClient } from "../../config/redis.js";
+import { ResponseError } from "../errors/handle-error.js";
+import { sendSuccess } from "../../utils/response-util.js";
 
 export const createAuthController = (service: UserService) => {
   const register = async (req: Request, res: Response) => {
     const { email, name, password } = req.body || {};
 
     if (!email || !name || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email, name and password is required" });
+      throw new ResponseError(400, "Email, name and password is required");
     }
 
-    const createUser = await service.createUser(email, name, password);
-    return res.status(201).json({
-      success: true,
-      message: "Register Success",
-      data: createUser,
-    });
+    const user = await service.createUser(email, name, password);
+
+    return sendSuccess(res, user, "Register Success", 201);
   };
 
   const login = async (req: Request, res: Response) => {
     const { email, password } = req.body || {};
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: true, message: "Email and password is required" });
+      throw new ResponseError(400, "Email and password is required");
     }
 
-    const user = await service.getUserByEmail(email);
-    if (!user) {
-      return res.status(401).json({ message: "Invalid Credentials" });
-    }
-
-    const comparePassword = await bcrypt.compare(password, user.password);
-    if (!comparePassword) {
-      return res.status(401).json({ message: "Invalid Credentials" });
-    }
+    const user = await service.authenticateUser(email, password);
 
     req.session.user = { id: user.id, email: user.email };
 
@@ -53,17 +39,15 @@ export const createAuthController = (service: UserService) => {
       },
     );
 
-    return res.status(200).json({
-      success: true,
-      message: "Login Success",
-    });
+    return sendSuccess(res, undefined, "Login Success");
   };
 
   const logout = async (req: Request, res: Response) => {
     await redisClient.del(`session:${req.sessionID}`);
+
     req.session.destroy(() => {
       res.clearCookie("connect.sid");
-      return res.json({ success: true, message: "Logged out successfully" });
+      return sendSuccess(res, undefined, "Logged out successfully");
     });
   };
 

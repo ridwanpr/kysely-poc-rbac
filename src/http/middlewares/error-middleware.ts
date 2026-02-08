@@ -24,7 +24,7 @@ export const errorMiddleware = (
       success: false,
       type: "Internal Server Error",
       message: error.message,
-      stack: isDevEnv ? error.stack : null,
+      ...(isDevEnv && { stack: error.stack }),
     });
   }
 };

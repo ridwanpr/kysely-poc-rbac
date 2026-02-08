@@ -1,0 +1,21 @@
+meta {
+  name: Create Permission
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5001/api/permissions
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  permission_slug: user:create
+  description: Create user
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

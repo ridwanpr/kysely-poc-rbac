@@ -32,7 +32,7 @@ export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
       .executeTakeFirst();
 
     if (!result.insertId) {
-      throw new Error("Something went wrong");
+      return undefined;
     }
 
     return await findRoleById(Number(result.insertId));
@@ -42,15 +42,19 @@ export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
     const { name, description } = data;
     const updatedAt = new Date();
 
-    await db
+    const result = await db
       .updateTable("roles")
       .set({
-        name: name,
-        description: description,
+        name,
+        description,
         updated_at: updatedAt,
       })
       .where("id", "=", id)
       .executeTakeFirst();
+
+    if (Number(result.numUpdatedRows) === 0) {
+      return undefined;
+    }
 
     return await findRoleById(id);
   };

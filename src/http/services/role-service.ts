@@ -13,39 +13,43 @@ export const createRoleService = (
   roleRepository: RoleRepository,
 ): RoleService => {
   const getRoles = async () => {
-    const roles = await roleRepository.getAllRoles();
-    return roles;
+    return await roleRepository.getAllRoles();
   };
 
   const createRole = async (name: string, description: string) => {
     const result = await roleRepository.createRole(name, description);
+
     if (!result) {
-      throw new Error("Something went wrong. Create role failed.");
+      throw new Error("Role creation failed unexpectedly.");
     }
+
     return result;
   };
 
   const updateRole = async (id: number, data: RoleInput) => {
     const result = await roleRepository.updateRole(id, data);
+
     if (!result) {
-      throw new Error("Something went wrong. Update role failed");
+      throw new ResponseError(404, "Role not found");
     }
+
     return result;
   };
 
   const deleteRole = async (id: number) => {
-    const role = await roleRepository.findRoleById(id);
-    if (!role) {
-      throw new ResponseError(404, "Role not found");
-    }
-
     const result = await roleRepository.deleteRole(id);
+
     if (result.numDeletedRows === BigInt(0)) {
-      throw new Error("Something went wrong. Delete role failed");
+      throw new ResponseError(404, "Role not found");
     }
 
     return true;
   };
 
-  return { getRoles, createRole, updateRole, deleteRole };
+  return {
+    getRoles,
+    createRole,
+    updateRole,
+    deleteRole,
+  };
 };
