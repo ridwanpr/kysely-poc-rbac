@@ -1,6 +1,6 @@
 import type { DeleteResult, Kysely, Selectable } from "kysely";
 import type { DB } from "../../database/types.js";
-import type { RoleInput } from "../../types/role-permission.js";
+import type { RoleInput } from "../../types/shared-type.js";
 
 export type Role = Selectable<DB["roles"]>;
 

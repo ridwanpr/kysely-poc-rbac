@@ -1,13 +1,16 @@
-import type { Kysely } from "kysely";
+import type { Kysely, Selectable } from "kysely";
 import type { DB } from "../../database/types.js";
 
+export type Permission = Selectable<DB["permissions"]>;
+
 export type PermissionRepository = {
-  getAllPermission: () => void;
+  getAllPermission: () => Promise<Permission[]>;
 };
 
 const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
-  const getAllPermission = () => {
-    throw new Error("Not yetimplemented");
+  const getAllPermission = async () => {
+    const permissions = db.selectFrom("permissions").selectAll().execute();
+    return permissions;
   };
 
   return { getAllPermission };

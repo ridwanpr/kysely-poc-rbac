@@ -5,3 +5,14 @@ import { permissionController } from "../config/container.js";
 export const permissionRouter = express.Router();
 
 permissionRouter.get("/permissions", authenticate, permissionController.index);
+permissionRouter.post("/permissions", authenticate, permissionController.store);
+permissionRouter.patch(
+  "/permissions",
+  authenticate,
+  permissionController.update,
+);
+permissionRouter.delete(
+  "/permissions",
+  authenticate,
+  permissionController.destroy,
+);

@@ -1,4 +1,4 @@
-import type { RoleInput } from "../../types/role-permission.js";
+import type { RoleInput } from "../../types/shared-type.js";
 import { ResponseError } from "../errors/handle-error.js";
 import type { Role, RoleRepository } from "../repositories/role-repository.js";
 

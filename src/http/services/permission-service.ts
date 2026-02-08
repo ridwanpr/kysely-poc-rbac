@@ -7,8 +7,8 @@ export type PermissionService = {
 const createPermissionService = (
   permissionRepository: PermissionRepository,
 ): PermissionService => {
-  const getAllPermission = () => {
-    throw new Error("Not yet implemented");
+  const getAllPermission = async () => {
+    return await permissionRepository.getAllPermission();
   };
 
   return { getAllPermission };
