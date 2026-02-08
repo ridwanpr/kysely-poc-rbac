@@ -8,6 +8,10 @@ export type PermissionRepository = {
   getAllPermission: () => Promise<Permission[]>;
   findPermissionById: (id: number) => Promise<Permission | undefined>;
   createPermission: (data: PermissionInput) => Promise<Permission | undefined>;
+  updatePermission: (
+    id: number,
+    data: PermissionInput,
+  ) => Promise<Permission | undefined>;
 };
 
 const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
@@ -45,7 +49,31 @@ const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
     return await findPermissionById(Number(result.insertId));
   };
 
-  return { getAllPermission, createPermission, findPermissionById };
+  const updatePermission = async (id: number, data: PermissionInput) => {
+    const updated_at = new Date();
+    const result = await db
+      .updateTable("permissions")
+      .where("id", "=", id)
+      .set({
+        permission_slug: data.permission_slug,
+        description: data.description,
+        updated_at,
+      })
+      .executeTakeFirst();
+
+    if (Number(result.numUpdatedRows) === 0) {
+      return undefined;
+    }
+
+    return await findPermissionById(id);
+  };
+
+  return {
+    getAllPermission,
+    createPermission,
+    findPermissionById,
+    updatePermission,
+  };
 };
 
 export { createPermissionRepository };

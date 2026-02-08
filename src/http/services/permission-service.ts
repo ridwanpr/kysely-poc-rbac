@@ -7,6 +7,7 @@ import type {
 export type PermissionService = {
   getAllPermission: () => Promise<Permission[]>;
   createPermission: (data: PermissionInput) => Promise<Permission>;
+  updatePermission: (id: number, data: PermissionInput) => Promise<Permission>;
 };
 
 const createPermissionService = (
@@ -25,7 +26,16 @@ const createPermissionService = (
     return result;
   };
 
-  return { getAllPermission, createPermission };
+  const updatePermission = async (id: number, data: PermissionInput) => {
+    const result = await permissionRepository.updatePermission(id, data);
+    if (!result) {
+      throw new Error("Update permission failed unexpectedly");
+    }
+
+    return result;
+  };
+
+  return { getAllPermission, createPermission, updatePermission };
 };
 
 export { createPermissionService };
