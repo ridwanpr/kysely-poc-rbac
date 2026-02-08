@@ -1,4 +1,4 @@
-import type { Kysely, Selectable } from "kysely";
+import type { DeleteResult, Kysely, Selectable } from "kysely";
 import type { DB } from "../../database/types.js";
 import type { PermissionInput } from "../../types/shared-type.js";
 
@@ -12,6 +12,7 @@ export type PermissionRepository = {
     id: number,
     data: PermissionInput,
   ) => Promise<Permission | undefined>;
+  deletePermission: (id: number) => Promise<DeleteResult>;
 };
 
 const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
@@ -68,11 +69,19 @@ const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
     return await findPermissionById(id);
   };
 
+  const deletePermission = async (id: number) => {
+    return await db
+      .deleteFrom("permissions")
+      .where("id", "=", id)
+      .executeTakeFirst();
+  };
+
   return {
     getAllPermission,
     createPermission,
     findPermissionById,
     updatePermission,
+    deletePermission,
   };
 };
 

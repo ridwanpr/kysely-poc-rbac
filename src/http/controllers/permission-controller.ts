@@ -50,8 +50,15 @@ const createPermissionController = (permissionService: PermissionService) => {
     return sendSuccess(res, result, "Update permission success");
   };
 
-  const destroy = async () => {
-    throw new Error(`Not yet implemented`);
+  const destroy = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      throw new ResponseError(400, "permission id is invalid");
+    }
+
+    await permissionService.deletePermission(id);
+
+    return sendSuccess(res, undefined, "Delete permission success");
   };
 
   return { index, store, update, destroy };

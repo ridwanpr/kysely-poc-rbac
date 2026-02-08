@@ -1,4 +1,5 @@
 import type { PermissionInput } from "../../types/shared-type.js";
+import { ResponseError } from "../errors/handle-error.js";
 import type {
   Permission,
   PermissionRepository,
@@ -8,6 +9,7 @@ export type PermissionService = {
   getAllPermission: () => Promise<Permission[]>;
   createPermission: (data: PermissionInput) => Promise<Permission>;
   updatePermission: (id: number, data: PermissionInput) => Promise<Permission>;
+  deletePermission: (id: number) => Promise<boolean>;
 };
 
 const createPermissionService = (
@@ -35,7 +37,22 @@ const createPermissionService = (
     return result;
   };
 
-  return { getAllPermission, createPermission, updatePermission };
+  const deletePermission = async (id: number) => {
+    const result = await permissionRepository.deletePermission(id);
+
+    if (result.numDeletedRows === BigInt(0)) {
+      throw new ResponseError(404, "Role not found");
+    }
+
+    return true;
+  };
+
+  return {
+    getAllPermission,
+    createPermission,
+    updatePermission,
+    deletePermission,
+  };
 };
 
 export { createPermissionService };
