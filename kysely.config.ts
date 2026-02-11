@@ -4,7 +4,10 @@ import { createPool } from "mysql2";
 
 export default defineConfig({
   migrations: {
-    migrationFolder: "src/db/migrations",
+    migrationFolder: "src/database/migrations",
+  },
+  seeds: {
+    seedFolder: "src/database/seeders",
   },
   dialect: new MysqlDialect({
     pool: createPool({

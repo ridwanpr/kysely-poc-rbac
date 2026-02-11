@@ -11,7 +11,9 @@
     "migrate:undo": "kysely migrate:down",
     "migrate:make": "kysely migrate:make",
     "codegen": "kysely-codegen --out-file ./src/database/types.ts",
-    "db:setup": "npm run migrate && npm run codegen"
+    "db:setup": "npm run migrate && npm run codegen",
+    "seed:make": "kysely seed:make",
+    "seed:run": "kysely seed:run"
   },
   "keywords": [],
   "author": "",
