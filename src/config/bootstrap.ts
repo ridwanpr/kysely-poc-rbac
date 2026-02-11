@@ -3,14 +3,16 @@ import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import { trimMiddleware } from "../http/middlewares/trim-middleware.js";
-import { userRouter } from "../routes/user-route.js";
-import { authRouter } from "../routes/auth-route.js";
 import { errorMiddleware } from "../http/middlewares/error-middleware.js";
 import { redisClient } from "./redis.js";
 import { RedisStore } from "connect-redis";
-import { roleRouter } from "../routes/role-route.js";
-import { permissionRouter } from "../routes/permission-route.js";
 import { authLimiter, globalLimiter } from "./rate-limit.js";
+import {
+  userRouter,
+  authRouter,
+  roleRouter,
+  permissionRouter,
+} from "./container.js";
 
 const app = express();
 
@@ -36,7 +38,7 @@ app.use(trimMiddleware);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/", roleRouter);
-app.use("/api/",permissionRouter);
+app.use("/api/", permissionRouter);
 
 app.use((_req, res) => {
   return res.sendStatus(404);

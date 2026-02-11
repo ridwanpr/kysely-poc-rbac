@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { userController } from "../config/container.js";
 import { authenticate } from "../http/middlewares/auth-middleware.js";
+import type { createUserController } from "../http/controllers/user-controller.js";
 
-const userRouter = Router();
+export const createUserRouter = (
+  userController: ReturnType<typeof createUserController>,
+) => {
+  const router = Router();
 
-userRouter.get("/:email", authenticate, userController.getUser);
+  router.get("/:email", authenticate, userController.getUser);
 
-export { userRouter };
+  return router;
+};

@@ -1,10 +1,16 @@
-import express from "express";
+import { Router } from "express";
 import { authenticate } from "../http/middlewares/auth-middleware.js";
-import { roleController } from "../config/container.js";
+import type { createRoleController } from "../http/controllers/role-controller.js";
 
-export const roleRouter = express.Router();
+export const createRoleRouter = (
+  roleController: ReturnType<typeof createRoleController>,
+) => {
+  const router = Router();
 
-roleRouter.get("/roles", authenticate, roleController.index);
-roleRouter.post("/roles", authenticate, roleController.store);
-roleRouter.patch("/roles/:id", authenticate, roleController.update);
-roleRouter.delete("/roles/:id", authenticate, roleController.destroy);
+  router.get("/roles", authenticate, roleController.index);
+  router.post("/roles", authenticate, roleController.store);
+  router.patch("/roles/:id", authenticate, roleController.update);
+  router.delete("/roles/:id", authenticate, roleController.destroy);
+
+  return router;
+};

@@ -1,18 +1,16 @@
-import express from "express";
+import { Router } from "express";
 import { authenticate } from "../http/middlewares/auth-middleware.js";
-import { permissionController } from "../config/container.js";
+import type { createPermissionController } from "../http/controllers/permission-controller.js";
 
-export const permissionRouter = express.Router();
+export const createPermissionRouter = (
+  permissionController: ReturnType<typeof createPermissionController>,
+) => {
+  const router = Router();
 
-permissionRouter.get("/permissions", authenticate, permissionController.index);
-permissionRouter.post("/permissions", authenticate, permissionController.store);
-permissionRouter.patch(
-  "/permissions/:id",
-  authenticate,
-  permissionController.update,
-);
-permissionRouter.delete(
-  "/permissions/:id",
-  authenticate,
-  permissionController.destroy,
-);
+  router.get("/permissions", authenticate, permissionController.index);
+  router.post("/permissions", authenticate, permissionController.store);
+  router.patch("/permissions/:id", authenticate, permissionController.update);
+  router.delete("/permissions/:id", authenticate, permissionController.destroy);
+
+  return router;
+};

@@ -1,11 +1,15 @@
 import { Router } from "express";
-import { authController } from "../config/container.js";
 import { authenticate } from "../http/middlewares/auth-middleware.js";
+import type { createAuthController } from "../http/controllers/auth-controller.js";
 
-const authRouter = Router();
+export const createAuthRouter = (
+  authController: ReturnType<typeof createAuthController>,
+) => {
+  const router = Router();
 
-authRouter.post("/register", authController.register);
-authRouter.post("/login", authController.login);
-authRouter.post("/logout", authenticate, authController.logout);
+  router.post("/register", authController.register);
+  router.post("/login", authController.login);
+  router.post("/logout", authenticate, authController.logout);
 
-export { authRouter };
+  return router;
+};
