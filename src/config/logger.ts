@@ -1,18 +1,26 @@
 import winston from "winston";
-import "winston-daily-rotate-file";
+import DailyRotateFile from "winston-daily-rotate-file";
 import path from "path";
 
 const logDirectory = path.join(process.cwd(), "storage/logs");
+const isProduction = process.env.NODE_ENV === "production";
 
-export const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
-  transports: [],
-});
+const filterOnly = (level: string) => {
+  return winston.format((info) => {
+    return info.level === level ? info : false;
+  })();
+};
 
-if (process.env.NODE_ENV === "production") {
-  logger.add(
-    new winston.transports.DailyRotateFile({
+const fileFormat = winston.format.combine(
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+  winston.format.json(),
+);
+
+const transports: winston.transport[] = [];
+
+if (isProduction) {
+  transports.push(
+    new DailyRotateFile({
       level: "error",
       dirname: logDirectory,
       filename: "error-%DATE%.log",
@@ -20,25 +28,46 @@ if (process.env.NODE_ENV === "production") {
       zippedArchive: true,
       maxSize: "20m",
       maxFiles: "14d",
+      format: fileFormat,
     }),
-  );
-
-  logger.add(
-    new winston.transports.DailyRotateFile({
+    new DailyRotateFile({
+      level: "warn",
       dirname: logDirectory,
-      filename: "combined-%DATE%.log",
+      filename: "warn-%DATE%.log",
       datePattern: "YYYY-MM-DD",
       zippedArchive: true,
       maxSize: "20m",
       maxFiles: "14d",
+      format: winston.format.combine(filterOnly("warn"), fileFormat),
+    }),
+    new DailyRotateFile({
+      level: "info",
+      dirname: logDirectory,
+      filename: "info-%DATE%.log",
+      datePattern: "YYYY-MM-DD",
+      zippedArchive: true,
+      maxSize: "20m",
+      maxFiles: "14d",
+      format: winston.format.combine(filterOnly("info"), fileFormat),
     }),
   );
 }
 
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
+if (!isProduction) {
+  transports.push(
     new winston.transports.Console({
-      format: winston.format.simple(),
+      level: "debug",
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple(),
+      ),
     }),
   );
 }
+
+const logger = winston.createLogger({
+  levels: winston.config.npm.levels,
+  transports: transports,
+});
+
+export { logger };

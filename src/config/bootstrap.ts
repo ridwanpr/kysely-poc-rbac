@@ -2,7 +2,6 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
-import { rateLimit } from "express-rate-limit";
 import { trimMiddleware } from "../http/middlewares/trim-middleware.js";
 import { userRouter } from "../routes/user-route.js";
 import { authRouter } from "../routes/auth-route.js";
@@ -11,6 +10,7 @@ import { redisClient } from "./redis.js";
 import { RedisStore } from "connect-redis";
 import { roleRouter } from "../routes/role-route.js";
 import { permissionRouter } from "../routes/permission-route.js";
+import { authLimiter, globalLimiter } from "./rate-limit.js";
 
 const app = express();
 
@@ -28,28 +28,6 @@ app.use(
     cookie: { secure: false, httpOnly: true, maxAge: 60 * 60 * 1000 }, // 1 hour
   }),
 );
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15min
-  limit: process.env.NODE_ENV === "production" ? 5 : 100,
-  message: {
-    success: false,
-    message: "Too many login attempts, please try again after 15 minutes",
-  },
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-});
-
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15min
-  limit: process.env.NODE_ENV === "production" ? 1000 : 100000,
-  message: {
-    success: false,
-    message: "You are rate limited, please try again after 15 minutes",
-  },
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-});
 
 app.use(globalLimiter);
 
