@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type Kysely, sql } from "kysely";
 import type { DB } from "../types.js";
 
