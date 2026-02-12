@@ -3,10 +3,12 @@ import { db } from "../database/index.js";
 import { createUserRepository } from "../http/repositories/user-repository.js";
 import { createRoleRepository } from "../http/repositories/role-repository.js";
 import { createPermissionRepository } from "../http/repositories/permission-repository.js";
+import { createUserRoleRepository } from "../http/repositories/user-role-repository.js";
 
 import { createUserService } from "../http/services/user-service.js";
 import { createRoleService } from "../http/services/role-service.js";
 import { createPermissionService } from "../http/services/permission-service.js";
+import { createUserRoleService } from "../http/services/user-role-service.js";
 
 import { createUserController } from "../http/controllers/user-controller.js";
 import { createAuthController } from "../http/controllers/auth-controller.js";
@@ -22,13 +24,18 @@ import { createUserRouter } from "../routes/user-route.js";
 const userRepository = createUserRepository(db);
 const roleRepository = createRoleRepository(db);
 const permissionRepository = createPermissionRepository(db);
+const userRoleRepository = createUserRoleRepository(db);
 
-// service
-const userService = createUserService(userRepository);
+// services
 const roleService = createRoleService(roleRepository);
+const userRoleService = createUserRoleService(
+  userRoleRepository,
+  roleRepository,
+);
+const userService = createUserService(userRepository, userRoleService);
 const permissionService = createPermissionService(permissionRepository);
 
-// controller
+// controllers
 const userController = createUserController(userService);
 const authController = createAuthController(userService);
 const roleController = createRoleController(roleService);

@@ -10,6 +10,7 @@ export type RoleRepository = {
   createRole: (name: string, description: string) => Promise<Role | undefined>;
   updateRole: (id: number, data: RoleInput) => Promise<Role | undefined>;
   deleteRole: (id: number) => Promise<DeleteResult>;
+  findRoleByName: (name: string) => Promise<Role | undefined>;
 };
 
 export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
@@ -63,11 +64,20 @@ export const createRoleRepository = (db: Kysely<DB>): RoleRepository => {
     return await db.deleteFrom("roles").where("id", "=", id).executeTakeFirst();
   };
 
+  const findRoleByName = async (name: string) => {
+    return await db
+      .selectFrom("roles")
+      .selectAll()
+      .where("name", "=", name)
+      .executeTakeFirst();
+  };
+
   return {
     getAllRoles,
     findRoleById,
     createRole,
     updateRole,
     deleteRole,
+    findRoleByName,
   };
 };

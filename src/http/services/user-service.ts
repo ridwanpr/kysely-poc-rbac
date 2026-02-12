@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import type { User, UserRepository } from "../repositories/user-repository.js";
 import { ResponseError } from "../errors/handle-error.js";
+import type { UserRoleService } from "./user-role-service.js";
 
 export interface UserService {
   getUserByEmail: (email: string) => Promise<User>;
@@ -8,7 +9,10 @@ export interface UserService {
   authenticateUser: (email: string, password: string) => Promise<User>;
 }
 
-export const createUserService = (repo: UserRepository): UserService => {
+export const createUserService = (
+  repo: UserRepository,
+  userRoleService: UserRoleService,
+): UserService => {
   const getUserByEmail = async (email: string) => {
     const user = await repo.findByEmail(email);
 
@@ -32,6 +36,8 @@ export const createUserService = (repo: UserRepository): UserService => {
     if (!newUser) {
       throw new Error("User creation failed unexpectedly");
     }
+
+    await userRoleService.assignDefaultRole(newUser.id);
 
     return newUser;
   };

@@ -7,6 +7,7 @@ export interface RoleService {
   createRole: (name: string, description: string) => Promise<Role>;
   updateRole: (id: number, data: RoleInput) => Promise<Role>;
   deleteRole: (id: number) => Promise<boolean>;
+  findRoleByName: (name: string) => Promise<Role>;
 }
 
 export const createRoleService = (
@@ -46,10 +47,20 @@ export const createRoleService = (
     return true;
   };
 
+  const findRoleByName = async (name: string) => {
+    const result = await roleRepository.findRoleByName(name);
+    if (!result) {
+      throw new ResponseError(404, "Role not found");
+    }
+
+    return result;
+  };
+
   return {
     getRoles,
     createRole,
     updateRole,
     deleteRole,
+    findRoleByName,
   };
 };
