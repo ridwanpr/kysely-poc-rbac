@@ -10,6 +10,10 @@ export type PermissionService = {
   createPermission: (data: PermissionInput) => Promise<Permission>;
   updatePermission: (id: number, data: PermissionInput) => Promise<Permission>;
   deletePermission: (id: number) => Promise<boolean>;
+  checkUserPermission: (
+    userId: number,
+    permissionSlug: string,
+  ) => Promise<boolean>;
 };
 
 const createPermissionService = (
@@ -47,11 +51,23 @@ const createPermissionService = (
     return true;
   };
 
+  const checkUserPermission = async (
+    userId: number,
+    permissionSlug: string,
+  ) => {
+    const result = await permissionRepository.checkUserPermission(
+      userId,
+      permissionSlug,
+    );
+    return result;
+  };
+
   return {
     getAllPermission,
     createPermission,
     updatePermission,
     deletePermission,
+    checkUserPermission,
   };
 };
 

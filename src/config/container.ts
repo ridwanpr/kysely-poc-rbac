@@ -19,6 +19,7 @@ import { createAuthRouter } from "../routes/auth-route.js";
 import { createPermissionRouter } from "../routes/permission-route.js";
 import { createRoleRouter } from "../routes/role-route.js";
 import { createUserRouter } from "../routes/user-route.js";
+import { createRequirePermissionMiddleware } from "../http/middlewares/require-permission-middleware.js";
 
 // repositories
 const userRepository = createUserRepository(db);
@@ -41,10 +42,17 @@ const authController = createAuthController(userService);
 const roleController = createRoleController(roleService);
 const permissionController = createPermissionController(permissionService);
 
+// middleware
+const { requirePermission } =
+  createRequirePermissionMiddleware(permissionService);
+
 // routes
 export const authRouter = createAuthRouter(authController);
-export const permissionRouter = createPermissionRouter(permissionController);
-export const roleRouter = createRoleRouter(roleController);
-export const userRouter = createUserRouter(userController);
+export const permissionRouter = createPermissionRouter(
+  permissionController,
+  requirePermission,
+);
+export const roleRouter = createRoleRouter(roleController, requirePermission);
+export const userRouter = createUserRouter(userController, requirePermission);
 
 export { userController, authController, roleController, permissionController };

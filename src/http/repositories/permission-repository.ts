@@ -13,6 +13,10 @@ export type PermissionRepository = {
     data: PermissionInput,
   ) => Promise<Permission | undefined>;
   deletePermission: (id: number) => Promise<DeleteResult>;
+  checkUserPermission: (
+    userId: number,
+    permissionSlug: string,
+  ) => Promise<boolean>;
 };
 
 const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
@@ -76,12 +80,37 @@ const createPermissionRepository = (db: Kysely<DB>): PermissionRepository => {
       .executeTakeFirst();
   };
 
+  const checkUserPermission = async (
+    userId: number,
+    permissionSlug: string,
+  ) => {
+    const result = await db
+      .selectFrom("users")
+      .innerJoin("user_roles", "users.id", "user_roles.user_id")
+      .innerJoin("roles", "user_roles.role_id", "roles.id")
+      .innerJoin("role_permissions", "roles.id", "role_permissions.role_id")
+      .innerJoin(
+        "permissions",
+        "role_permissions.permission_id",
+        "permissions.id",
+      )
+      .select("permissions.id")
+      .where("users.id", "=", userId)
+      .where("permissions.permission_slug", "=", permissionSlug)
+      .executeTakeFirst();
+
+    if (!result) return false;
+
+    return true;
+  };
+
   return {
     getAllPermission,
     createPermission,
     findPermissionById,
     updatePermission,
     deletePermission,
+    checkUserPermission,
   };
 };
 
